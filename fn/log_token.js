@@ -1,6 +1,6 @@
 const {getAddress, toAddress} = require('../utils/does_it_exist');
 const abi = require('../config/token.json');
-const {toeknList, logBlock, fromBlock} = require('../config/config')
+const {tokenList, logBlock, fromBlock} = require('../config/config')
 const notice = require('./send_fn');
 
 module.exports = () => {
@@ -20,6 +20,9 @@ module.exports = () => {
 const sendFn = async (log) => {
     let _from = getAddress(log.topics[1])
     let _contractAddr = toAddress(log.address);
+
+    let url = 'https://cn.etherscan.com/token/'+log.transactionHash;
+
     if (_from == 0) {
         try {
 
@@ -28,17 +31,19 @@ const sendFn = async (log) => {
             let _name = await _contract.methods.name().call();
             let _str = (_name + ' ' + _symbol).toLowerCase();
             let _newToken
-            for (let i = 0; i < toeknList.length; i++) {
-                let _key = toeknList[i].toLowerCase();
+
+            for (let i = 0; i < tokenList.length; i++) {
+                let _key = tokenList[i].toLowerCase();
+                console.log(_str.indexOf(_key) > -1,_str);
                 if (_str.indexOf(_key) > -1) {
+
                     _newToken = true;
                     break;
                 }
             }
-
             if (!_newToken) return;
 
-            noticeFn(_name, _symbol);
+            noticeFn(_name, _symbol,url);
         } catch (e) {
             console.log('非token合约');
         }
@@ -50,15 +55,19 @@ const sendFn = async (log) => {
  *
  * @param name
  * @param symbol
+ * @param url
  */
-function noticeFn(name, symbol) {
+function noticeFn(name, symbol,url) {
     let requestData = {
         'msgtype': 'markdown',
         'markdown': {
             'content': `
             <font color="#3498db">监听新token发布</font>
             >name: <font color="warning">${name}</font>
-            >symbol: <font color="warning">${symbol}</font>`
+            >symbol: <font color="warning">${symbol}</font>
+            >Url: <font color="warning">[Detail](${url})</font>
+`
+
         },
     };
     notice(requestData);
