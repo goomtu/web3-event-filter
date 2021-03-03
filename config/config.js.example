@@ -1,9 +1,11 @@
 const Config = {
-    provider: "wss://",
-    tokenList:['NsUre'],
-    fromBlock:11964761, // 默认为最新 null
-    logBlock:11964761,
+    provider: "ws://localhost:8546",
+    tokenList:['RULER', 'FLX'],    // 监听token名称
+    fromBlock:null, // null表示从最新区块开始
+    logBlock:null,
     pairCreatedBlock:null,
+
+    // 监听 创建的交易对的token地址，目前支持sushi和uni
     monitorPairCreatedList:[
         '0xc0aee478e3658e2610c5f7a4a2e1777ce9e4f2ac',
         '0x5c69bee701ef814a2b6a3edd4b1652cb9cc5aa6f',
