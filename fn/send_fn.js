@@ -2,10 +2,8 @@ const {weChatUrl} = require('../config/config');
 const request = require('request');
 
 module.exports = (requestData) => {
-
-
-
-
+    console.log("send alarm, data: ", requestData)
+    
     request({
         url: weChatUrl,
         method: "POST",
@@ -16,7 +14,7 @@ module.exports = (requestData) => {
         body: requestData
     }, function (error, response, body) {
         if (!error && response.statusCode == 200) {
-            console.log(body) // 请求成功的处理逻辑
+            // console.log(body) // 请求成功的处理逻辑
         }
     });
 

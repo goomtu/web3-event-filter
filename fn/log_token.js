@@ -11,7 +11,7 @@ module.exports = () => {
         if (error)
             console.log(error, 'errrr');
     })
-        .on("connected", console.log)
+        .on("connected", () => console.log("run monitor_token success"))
         .on("data", sendFn)
         .on("changed", console.log);
 }
@@ -21,7 +21,7 @@ const sendFn = async (log) => {
     let _from = getAddress(log.topics[1])
     let _contractAddr = toAddress(log.address);
 
-    let url = 'https://cn.etherscan.com/token/'+log.transactionHash;
+    let url = 'https://cn.etherscan.com/token/'+_contractAddr;
 
     if (_from == 0) {
         try {
@@ -34,9 +34,9 @@ const sendFn = async (log) => {
 
             for (let i = 0; i < tokenList.length; i++) {
                 let _key = tokenList[i].toLowerCase();
-                console.log(_str.indexOf(_key) > -1,_str);
-                if (_str.indexOf(_key) > -1) {
+               console.log("Find a new token, Symbol: ", _symbol, ", Name: ", _name);
 
+                if (_str.indexOf(_key) > -1) {
                     _newToken = true;
                     break;
                 }
@@ -45,7 +45,7 @@ const sendFn = async (log) => {
 
             noticeFn(_name, _symbol,url);
         } catch (e) {
-            console.log('非token合约');
+           // console.log('非token合约');
         }
 
     }
@@ -63,9 +63,9 @@ function noticeFn(name, symbol,url) {
         'markdown': {
             'content': `
             <font color="#3498db">监听新token发布</font>
-            >name: <font color="warning">${name}</font>
-            >symbol: <font color="warning">${symbol}</font>
-            >Url: <font color="warning">[Detail](${url})</font>
+            >Name: <font color="warning">${name}</font>
+            >Symbol: <font color="warning">${symbol}</font>
+            >Link: <font color="warning">[Detail](${url})</font>
 `
 
         },
